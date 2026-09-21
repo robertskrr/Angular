@@ -9,7 +9,8 @@ import "./style.css";
 //import "./topics/07-import-export";
 //import "./topics/08-classes";
 //import "./topics/09-generics";
-import '../src/topics/10-decorators'
+//import '../src/topics/10-decorators'
+import "./topics/11-optional-chaining";
 
 const app = document.querySelector<HTMLDivElement>("#app")!;
 
