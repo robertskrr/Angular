@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { RESTCountry } from '../interfaces/rest-country.interface';
-import { map, Observable, catchError, throwError } from 'rxjs';
+import { map, Observable, catchError, throwError, delay } from 'rxjs';
 import { CountryMapper } from '../mappers/country.mapper';
 import { Country } from '../interfaces/country.interface';
 
@@ -33,5 +33,28 @@ export class CountryService {
           );
         }),
       );
+  }
+
+  searchByCountry(query: string) {
+    const url = `${API_URL}?q=${query}`;
+    query = query.toLowerCase();
+
+    return this.http.get<RESTCountry>(url, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+    .pipe(
+      map((response) =>
+        CountryMapper.mapRestCountryToArray(response.data.objects)
+      ),
+      delay(2000),
+      catchError((error) => {
+        console.log('Error fetching ', error);
+          return throwError(
+            () => new Error(`No hay países con ese query: ${query}`),
+          );
+      })
+    )
   }
 }

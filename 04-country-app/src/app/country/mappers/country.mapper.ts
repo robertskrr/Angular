@@ -5,6 +5,7 @@ export class CountryMapper {
   static mapRestCountryToCountry(country: CountryRest): Country {
     return {
       uuid: country.uuid,
+      code: country.codes.alpha_2,
       flag: country.flag.emoji,
       flagSvg: country.flag.url_svg,
       name: country.names.translations['spa'].common ?? 'No Spanish Name',
