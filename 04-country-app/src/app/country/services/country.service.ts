@@ -39,22 +39,46 @@ export class CountryService {
     const url = `${API_URL}?q=${query}`;
     query = query.toLowerCase();
 
-    return this.http.get<RESTCountry>(url, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-    .pipe(
-      map((response) =>
-        CountryMapper.mapRestCountryToArray(response.data.objects)
-      ),
-      delay(2000),
-      catchError((error) => {
-        console.log('Error fetching ', error);
+    return this.http
+      .get<RESTCountry>(url, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .pipe(
+        map((response) =>
+          CountryMapper.mapRestCountryToArray(response.data.objects),
+        ),
+        delay(2000),
+        catchError((error) => {
+          console.log('Error fetching ', error);
           return throwError(
             () => new Error(`No hay países con ese query: ${query}`),
           );
+        }),
+      );
+  }
+
+  searchCountryByAlphaCode(code: string) {
+    const url = `${API_URL}/codes.alpha_2/${code}`;
+
+    return this.http
+      .get<RESTCountry>(url, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       })
-    )
+      .pipe(
+        map((response) =>
+          CountryMapper.mapRestCountryToArray(response.data.objects),
+        ),
+        map((countries) => countries.at(0)),
+        catchError((error) => {
+          console.log('Error fetching ', error);
+          return throwError(
+            () => new Error(`No hay países con ese código: ${code}`),
+          );
+        }),
+      );
   }
 }
